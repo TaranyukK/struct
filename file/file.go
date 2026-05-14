@@ -8,7 +8,7 @@ import (
 )
 
 func ReadFile(name string) ([]byte, error) {
-	if filepath.Ext(name) == ".json" {
+	if filepath.Ext(name) != ".json" {
 		fmt.Println("Недопустимый формат файла")
 		err := errors.New("INVALID_FORMAT")
 		return nil, err

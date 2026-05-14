@@ -6,7 +6,7 @@ import (
 	"struct/file"
 )
 
-func StorageBins(bins []Bin) {
+func StorageBins(bins []*Bin) {
 	serializedBins, err := json.Marshal(bins)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -15,17 +15,17 @@ func StorageBins(bins []Bin) {
 	file.WriteFile(serializedBins, "bins.json")
 }
 
-func ReadBins(name string) {
+func ReadBins(name string) []*Bin {
 	data, err := file.ReadFile(name)
 	if err != nil {
 		fmt.Println(err.Error())
-		return
+		return nil
 	}
-	var bins []Bin
+	var bins []*Bin
 	err = json.Unmarshal(data, &bins)
 	if err != nil {
 		fmt.Println(err.Error())
-		return
+		return nil
 	}
-	fmt.Println(bins)
+	return bins
 }
