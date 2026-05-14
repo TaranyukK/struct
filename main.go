@@ -8,7 +8,6 @@ import (
 func main() {
 	id := "1"
 	private := false
-
 	newBin, err := bins.NewBin(id, private)
 	if err != nil {
 		if err.Error() == "INVALID_ID" {
@@ -16,6 +15,5 @@ func main() {
 		}
 		return
 	}
-
 	fmt.Println(newBin)
 }
