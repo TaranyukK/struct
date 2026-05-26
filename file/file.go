@@ -7,7 +7,12 @@ import (
 	"path/filepath"
 )
 
-func ReadFile(name string) ([]byte, error) {
+type File interface {
+	Read(string) ([]byte, error)
+	Write([]byte, string)
+}
+
+func Read(name string) ([]byte, error) {
 	if filepath.Ext(name) != ".json" {
 		fmt.Println("Недопустимый формат файла")
 		err := errors.New("INVALID_FORMAT")
@@ -20,7 +25,7 @@ func ReadFile(name string) ([]byte, error) {
 	return data, nil
 }
 
-func WriteFile(content []byte, name string) {
+func Write(content []byte, name string) {
 	file, err := os.Create(name)
 	if err != nil {
 		fmt.Println(err)

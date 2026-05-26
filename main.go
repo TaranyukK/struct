@@ -2,18 +2,20 @@ package main
 
 import (
 	"fmt"
-	"struct/bins"
+	bin "struct/bins"
+	"struct/storage"
 )
 
 func main() {
 	id := "1"
 	private := false
-	newBin, err := bins.NewBin(id, private)
+	name := "Some File"
+	newBin, err := bin.NewBin(id, private, name)
 	if err != nil {
-		if err.Error() == "INVALID_ID" {
-			fmt.Println("Неверный id")
-		}
+		fmt.Println("Ошибка создания:", err)
 		return
 	}
-	fmt.Println(newBin)
+	existingBins := storage.Read("bins.json")
+	existingBins = append(existingBins, *newBin)
+	storage.Write(existingBins)
 }

@@ -3,29 +3,33 @@ package storage
 import (
 	"encoding/json"
 	"fmt"
-	"struct/bins"
+	bin "struct/bins"
 	"struct/file"
 )
 
-func StorageBins(bins []*bins.Bin) {
-	serializedBins, err := json.Marshal(bins)
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-	file.WriteFile(serializedBins, "bins.json")
+type Bins interface {
+	Read(string) []bin.Bin
+	Write([]bin.Bin)
 }
 
-func ReadBins(name string) []*bins.Bin {
-	data, err := file.ReadFile(name)
+func Write(bins []bin.Bin) {
+	serializedBins, err := json.Marshal(bins)
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Println("Ошибка сериализации:", err)
+		return
+	}
+	file.Write(serializedBins, "bins.json")
+}
+
+func Read(name string) []bin.Bin {
+	data, err := file.Read(name)
+	if err != nil {
 		return nil
 	}
-	var bins []*bins.Bin
+	var bins []bin.Bin
 	err = json.Unmarshal(data, &bins)
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Println("Ошибка десериализации:", err)
 		return nil
 	}
 	return bins
