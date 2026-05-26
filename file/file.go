@@ -12,7 +12,13 @@ type File interface {
 	Write([]byte, string)
 }
 
-func Read(name string) ([]byte, error) {
+type OSFile struct{}
+
+func NewOSFile() *OSFile {
+	return &OSFile{}
+}
+
+func (file *OSFile) Read(name string) ([]byte, error) {
 	if filepath.Ext(name) != ".json" {
 		fmt.Println("Недопустимый формат файла")
 		err := errors.New("INVALID_FORMAT")
@@ -25,13 +31,13 @@ func Read(name string) ([]byte, error) {
 	return data, nil
 }
 
-func Write(content []byte, name string) {
-	file, err := os.Create(name)
+func (file *OSFile) Write(content []byte, name string) {
+	osfile, err := os.Create(name)
 	if err != nil {
 		fmt.Println(err)
 	}
-	defer file.Close()
-	_, err = file.Write(content)
+	defer osfile.Close()
+	_, err = osfile.Write(content)
 	if err != nil {
 		fmt.Println(err)
 		return

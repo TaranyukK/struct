@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	bin "struct/bins"
+	"struct/file"
 	"struct/storage"
 )
 
@@ -15,7 +16,9 @@ func main() {
 		fmt.Println("Ошибка создания:", err)
 		return
 	}
-	existingBins := storage.Read("bins.json")
+	osFile := file.NewOSFile()
+	jsonStorage := storage.NewJSONBinStorage(osFile)
+	existingBins := jsonStorage.Read("bins.json")
 	existingBins = append(existingBins, *newBin)
-	storage.Write(existingBins)
+	jsonStorage.Write(existingBins)
 }

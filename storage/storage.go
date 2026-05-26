@@ -12,17 +12,27 @@ type Bins interface {
 	Write([]bin.Bin)
 }
 
-func Write(bins []bin.Bin) {
+type JSONBinStorage struct {
+	FileRepo file.File
+}
+
+func NewJSONBinStorage(file file.File) *JSONBinStorage {
+	return &JSONBinStorage{
+		FileRepo: file,
+	}
+}
+
+func (storage *JSONBinStorage) Write(bins []bin.Bin) {
 	serializedBins, err := json.Marshal(bins)
 	if err != nil {
 		fmt.Println("Ошибка сериализации:", err)
 		return
 	}
-	file.Write(serializedBins, "bins.json")
+	storage.FileRepo.Write(serializedBins, "bins.json")
 }
 
-func Read(name string) []bin.Bin {
-	data, err := file.Read(name)
+func (storage *JSONBinStorage) Read(name string) []bin.Bin {
+	data, err := storage.FileRepo.Read(name)
 	if err != nil {
 		return nil
 	}
