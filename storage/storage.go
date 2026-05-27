@@ -3,29 +3,43 @@ package storage
 import (
 	"encoding/json"
 	"fmt"
-	"struct/bins"
+	bin "struct/bins"
 	"struct/file"
 )
 
-func StorageBins(bins []*bins.Bin) {
-	serializedBins, err := json.Marshal(bins)
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-	file.WriteFile(serializedBins, "bins.json")
+type Bins interface {
+	Read(string) []bin.Bin
+	Write([]bin.Bin)
 }
 
-func ReadBins(name string) []*bins.Bin {
-	data, err := file.ReadFile(name)
+type JSONBinStorage struct {
+	FileRepo file.File
+}
+
+func NewJSONBinStorage(file file.File) *JSONBinStorage {
+	return &JSONBinStorage{
+		FileRepo: file,
+	}
+}
+
+func (storage *JSONBinStorage) Write(bins []bin.Bin) {
+	serializedBins, err := json.Marshal(bins)
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Println("Ошибка сериализации:", err)
+		return
+	}
+	storage.FileRepo.Write(serializedBins, "bins.json")
+}
+
+func (storage *JSONBinStorage) Read(name string) []bin.Bin {
+	data, err := storage.FileRepo.Read(name)
+	if err != nil {
 		return nil
 	}
-	var bins []*bins.Bin
+	var bins []bin.Bin
 	err = json.Unmarshal(data, &bins)
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Println("Ошибка десериализации:", err)
 		return nil
 	}
 	return bins

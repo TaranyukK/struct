@@ -1,8 +1,7 @@
-package bins
+package bin
 
 import (
 	"errors"
-	"struct/storage"
 	"time"
 )
 
@@ -13,18 +12,14 @@ type Bin struct {
 	Name      string    `json:"name"`
 }
 
-var BinList []*Bin
-
-func NewBin(id string, private bool) (*Bin, error) {
+func NewBin(id string, private bool, name string) (*Bin, error) {
 	if id == "" {
 		return nil, errors.New("INVALID_ID")
 	}
-	newBin := &Bin{
+	return &Bin{
 		Id:        id,
 		Private:   private,
 		CreatedAt: time.Now(),
-	}
-	BinList = append(BinList, newBin)
-	storage.StorageBins(BinList)
-	return newBin, nil
+		Name:      name,
+	}, nil
 }
