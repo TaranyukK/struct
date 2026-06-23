@@ -1,15 +1,18 @@
 package config
 
-import "os"
+import (
+	"errors"
+	"os"
+)
 
 type Config struct {
 	Key string
 }
 
-func NewConfig() *Config {
-	key := os.Getenv("KEY")
-
-	return &Config{
-		Key: key,
+func NewConfig() (*Config, error) {
+	key := os.Getenv("JSONBIN_KEY")
+	if key == "" {
+		return nil, errors.New("переменная окружения JSONBIN_KEY не установлена")
 	}
+	return &Config{Key: key}, nil
 }
